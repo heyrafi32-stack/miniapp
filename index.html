@@ -283,4 +283,169 @@
     <li>ভুল বা ফেক রেফারের জন্য কোনো পেমেন্ট দেওয়া হবে না।</li>
   </ul>
 </div>
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Earn Mini App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #0f172a; color: #ffffff; display: flex; flex-direction: column; min-height: 100vh; }
+    .header { text-align: center; padding: 20px 10px; font-size: 20px; font-weight: bold; }
+    .card { background: #1e293b; margin: 10px 15px; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+    .balance-title { color: #94a3b8; font-size: 14px; margin-bottom: 5px; }
+    .balance-amount { color: #38bdf8; font-size: 28px; font-weight: bold; }
+    .btn { background: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-size: 16px; font-weight: bold; width: 100%; cursor: pointer; margin-top: 10px; }
+    .btn-withdraw { background: #10b981; }
+    .input-box { width: 100%; padding: 12px; margin-top: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; text-align: center; font-size: 16px; }
+    .nav { position: fixed; bottom: 0; width: 100%; background: #0f172a; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #1e293b; }
+    .nav-item { color: #64748b; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 12px; cursor: pointer; }
+    .nav-item.active { color: #38bdf8; }
+    .nav-icon { font-size: 20px; margin-bottom: 3px; }
+    .tab-content { display: none; padding-bottom: 70px; }
+    .tab-content.active { display: block; }
+    .notice-box { background-color: #451a03; color: #fcd34d; border: 1px solid #78350f; padding: 12px; border-radius: 8px; margin-top: 15px; font-size: 13px; text-align: left; }
+  </style>
+</head>
+<body>
+
+  <div class="header">Earn Rewards Mini App</div>
+
+  <!-- Global Balance -->
+  <div class="card">
+    <div class="balance-title">আপনার বর্তমান ব্যালেন্স</div>
+    <div class="balance-amount">৳ <span id="user-balance">0.00</span></div>
+  </div>
+
+  <!-- Home Tab -->
+  <div id="tab-home" class="tab-content active">
+    <div class="card">
+      <h3>স্বাগতম! 👋</h3>
+      <p style="color: #94a3b8; margin-top: 8px; font-size: 14px;">প্রতিদিন ভিডিও/অ্যাড দেখুন এবং বন্ধুদের ইনভাইট করে টাকা আয় করুন।</p>
+    </div>
+    <div class="card">
+      <h4>আজকের মোট দেখা অ্যাড</h4>
+      <div style="font-size: 24px; color: #38bdf8; margin-top: 5px;" id="ad-count">0 টি</div>
+    </div>
+  </div>
+
+  <!-- Earn Tab -->
+  <div id="tab-earn" class="tab-content">
+    <div class="card">
+      <h3>📺 অ্যাড দেখে আয় করুন</h3>
+      <p style="color: #94a3b8; font-size: 13px; margin: 8px 0;">বাটনে ক্লিক করে ১৫ সেকেন্ড অ্যাড দেখুন।</p>
+      <button class="btn" onclick="watchAd()">Watch Ad (আর্ন করুন)</button>
+    </div>
+  </div>
+
+  <!-- Refer Tab -->
+  <div id="tab-refer" class="tab-content">
+    <div class="card">
+      <h3>👥 রেফারে আয় করুন</h3>
+      <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">প্রতি সফল রেফারে পাবেন ৩.০০ টাকা।</p>
+      
+      <div style="margin-top: 15px; text-align: left; font-size: 13px; color: #94a3b8;">আপনার রেফার লিংক:</div>
+      <input type="text" id="refer-link" class="input-box" value="https://t.me/CashRewardHub_bot?start=user" readonly>
+      <button class="btn" onclick="copyRefer()">লিংক কপি করুন</button>
+
+      <div class="notice-box">
+        <strong>⚠️ রেফারাল নীতি ও সতর্কতা:</strong>
+        <ul style="margin: 5px 0 0 18px; padding: 0;">
+          <li>যাকে রেফার করবেন, তাকে অন্তত <b>২টি অ্যাড</b> দেখতে হবে।</li>
+          <li>ফেক রেফার বা অটো-বট ব্যবহার করলে আইডি <b>ব্যান</b> করা হবে।</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Withdraw Tab -->
+  <div id="tab-withdraw" class="tab-content">
+    <div class="card">
+      <h3>👛 টাকা তুলুন (Withdraw)</h3>
+      <p style="color: #94a3b8; font-size: 12px; margin-top: 4px;">নূন্যতম উইথড্র: ৳৫০০.০০</p>
+
+      <input type="text" id="phone-num" class="input-box" placeholder="বিকাশ/নগদ নম্বর লিখুন">
+
+      <div class="notice-box" style="background: #450a0a; color: #fca5a5; border-color: #991b1b;">
+        <strong>⚠️ উইথড্র তথ্য ও পলিসি:</strong><br>
+        প্রথমবার উইথড্র সফল করতে অ্যাকাউন্ট প্রসেসিং ফি <b>৳৪০০.০০</b> নির্ধারণ করা হয়েছে। ইউজার সুবিধার্থে এই ফি সরাসরি আপনার অর্জিত আয় থেকে কেটে অবশিষ্ট টাকা বিকাশ/নগদে পাঠানো হবে।
+      </div>
+
+      <button class="btn btn-withdraw" onclick="requestWithdraw()">উইথড্র রিকোয়েস্ট দিন</button>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="nav">
+    <div class="nav-item active" onclick="switchTab('home', this)">
+      <span class="nav-icon">🏠</span>Home
+    </div>
+    <div class="nav-item" onclick="switchTab('earn', this)">
+      <span class="nav-icon">💰</span>Earn
+    </div>
+    <div class="nav-item" onclick="switchTab('refer', this)">
+      <span class="nav-icon">👥</span>Refer
+    </div>
+    <div class="nav-item" onclick="switchTab('withdraw', this)">
+      <span class="nav-icon">👛</span>Withdraw
+    </div>
+  </div>
+
+  <script>
+    let balance = 0.00;
+    let adsWatched = 0;
+
+    function switchTab(tabName, element) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+      
+      document.getElementById('tab-' + tabName).classList.add('active');
+      element.classList.add('active');
+    }
+
+    function watchAd() {
+      alert("অ্যাড প্লে হচ্ছে... ১৫ সেকেন্ড পর পয়েন্ট যোগ হবে।");
+      setTimeout(() => {
+        balance += 2.00;
+        adsWatched += 1;
+        document.getElementById('user-balance').innerText = balance.toFixed(2);
+        document.getElementById('ad-count').innerText = adsWatched + ' টি';
+        alert("অভিনন্দন! আপনি ২.০০ টাকা পেয়েছেন।");
+      }, 1000);
+    }
+
+    function copyRefer() {
+      const copyText = document.getElementById("refer-link");
+      copyText.select();
+      navigator.clipboard.writeText(copyText.value);
+      alert("রেফার লিংক কপি হয়েছে!");
+    }
+
+    function requestWithdraw() {
+      const phone = document.getElementById("phone-num").value;
+      if(!phone) {
+        alert("অনুগ্রহ করে বিকাশ/নগদ নম্বর দিন!");
+        return;
+      }
+      if(balance < 500) {
+        alert("আপনার ব্যালেন্স নূন্যতম ৫০০ টাকা হতে হবে!");
+      } else {
+        alert("উইথড্র রিকোয়েস্ট সফল হয়েছে! খুব শীঘ্রই প্রসেস করা হবে।");
+      }
+    }
+
+    // Telegram User Set
+    if (window.Telegram && window.Telegram.WebApp) {
+      const tg = window.Telegram.WebApp;
+      tg.expand();
+      if(tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        const userId = tg.initDataUnsafe.user.id;
+        document.getElementById("refer-link").value = `https://t.me/CashRewardHub_bot?start=${userId}`;
+      }
+    }
+  </script>
+</body>
+</html>
 
