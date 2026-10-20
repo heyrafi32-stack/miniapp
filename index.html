@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earn Mini App</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0f172a;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header Area */
+        .header {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            padding: 20px;
+            text-align: center;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .balance-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 15px;
+            margin-top: 10px;
+        }
+
+        .balance-amount {
+            font-size: 28px;
+            font-weight: bold;
+            color: #38bdf8;
+        }
+
+        /* Content Sections */
+        .content {
+            flex: 1;
+            padding: 20px;
+            padding-bottom: 80px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background-color: #1e293b;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #334155;
+            text-align: center;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #1e293b;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            border-top: 1px solid #334155;
+        }
+
+        .nav-item {
+            color: #94a3b8;
+            text-align: center;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .nav-item.active {
+            color: #38bdf8;
+            font-weight: bold;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        /* Notice Box */
+        .notice-box {
+            background-color: rgba(239, 68, 68, 0.15);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            text-align: left;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <div class="header">
+        <h2>Earn Rewards Mini App</h2>
+        <div class="balance-card">
+            <p style="font-size: 14px; color: #94a3b8;">আপনার বর্তমান ব্যালেন্স</p>
+            <div class="balance-amount">৳ <span id="userBalance">0.00</span></div>
+        </div>
+    </div>
+
+    <!-- Main Content Section -->
+    <div class="content">
+
+        <!-- 1. Home Tab -->
+        <div id="home" class="tab-content active">
+            <div class="card">
+                <h3>স্বাগতম! 👋</h3>
+                <p style="margin-top: 8px; color: #94a3b8; font-size: 14px;">
+                    প্রতিদিন ভিডিও/অ্যাড দেখুন এবং বন্ধুদের ইনভাইট করে টাকা আয় করুন।
+                </p>
+            </div>
+            <div class="card">
+                <h4>আজকের মোট দেখা অ্যাড</h4>
+                <h2 style="color: #38bdf8; margin: 10px 0;"><span id="adsWatched">0</span> টি</h2>
+            </div>
+        </div>
+
+        <!-- 2. Earn Tab -->
+        <div id="earn" class="tab-content">
+            <div class="card">
+                <h3>📺 অ্যাড দেখে আয় করুন</h3>
+                <p style="margin-top: 8px; color: #94a3b8; font-size: 14px;">
+                    বাটনে ক্লিক করে ১৫ সেকেন্ড অ্যাড দেখুন।
+                </p>
+                <button class="btn" onclick="watchAd()">Watch Ad (আর্ন করুন)</button>
+            </div>
+        </div>
+
+        <!-- 3. Refer Tab -->
+        <div id="refer" class="tab-content">
+            <div class="card">
+                <h3>👥 রেফারে আয় করুন</h3>
+                <p style="margin-top: 8px; color: #94a3b8; font-size: 14px;">
+                    প্রতি সফল রেফারে পাবেন ৳৩.০০ টাকা।
+                </p>
+                <div class="notice-box" style="border-color: #38bdf8; background: rgba(56, 189, 248, 0.1); color: #7dd3fc; margin-top: 10px;">
+                    আপনার রেফার লিংক: <br>
+                    <b id="refLink">https://t.me/YourBot?start=123456</b>
+                </div>
+                <button class="btn" onclick="copyReferLink()">লিংক কপি করুন</button>
+            </div>
+        </div>
+
+        <!-- 4. Withdraw Tab -->
+        <div id="withdraw" class="tab-content">
+            <div class="card">
+                <h3>👛 টাকা তুলুন (Withdraw)</h3>
+                <p style="margin-top: 8px; color: #94a3b8; font-size: 14px;">
+                    নূন্যতম উইথড্র: ৳৫০০.০০
+                </p>
+                
+                <div class="notice-box" style="margin-top: 15px;">
+                    <b>⚠️ উইথড্র তথ্য ও পলিসি:</b><br>
+                    প্রথমবার উইথড্র সফল করতে অ্যাকাউন্ট প্রসেসিং ফি <b>৳৪০০.০০</b> নির্ধারণ করা হয়েছে। ইউজার সুবিধার্থে এই ফি সরাসরি আপনার অর্জিত আয় থেকে কেটে অবশিষ্ট টাকা বিকাশ/নগদে পাঠানো হবে।
+                </div>
+
+                <button class="btn" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="processWithdraw()">উইথড্র রিকোয়েস্ট দিন</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('home', this)">
+            <span class="nav-icon">🏠</span>
+            Home
+        </div>
+        <div class="nav-item" onclick="switchTab('earn', this)">
+            <span class="nav-icon">💰</span>
+            Earn
+        </div>
+        <div class="nav-item" onclick="switchTab('refer', this)">
+            <span class="nav-icon">👥</span>
+            Refer
+        </div>
+        <div class="nav-item" onclick="switchTab('withdraw', this)">
+            <span class="nav-icon">👛</span>
+            Withdraw
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        let balance = 0.00;
+        let adsCount = 0;
+
+        // Switch Tabs Function
+        function switchTab(tabId, element) {
+            let tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            let navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+        }
+
+        // Watch Ad Logic (আপনার অ্যাডসটেরা ডিরেক্ট লিংক সহ)
+        function watchAd() {
+            let adUrl = "https://asiafilm.org/4/5d3da8e7d3020ee8a97cdb043759d98a"; 
+            window.open(adUrl, '_blank');
+
+            // Balance Add
+            balance += 1.50; // প্রতি অ্যাডে ১.৫০ টাকা
+            adsCount += 1;
+
+            document.getElementById('userBalance').innerText = balance.toFixed(2);
+            document.getElementById('adsWatched').innerText = adsCount;
+
+            alert("অ্যাড দেখা সফল হয়েছে! আপনার ব্যালেন্সে ৳১.৫০ যোগ হয়েছে।");
+        }
+
+        // Copy Refer Link
+        function copyReferLink() {
+            let linkText = document.getElementById('refLink').innerText;
+            navigator.clipboard.writeText(linkText);
+            alert("রেফার লিংক কপি হয়েছে!");
+        }
+
+        // Withdraw Process
+        function processWithdraw() {
+            if (balance < 500) {
+                alert("আপনার ব্যালেন্স নূন্যতম ৫০০ টাকা হতে হবে। বর্তমান ব্যালেন্স: ৳" + balance.toFixed(2));
+            } else {
+                alert("আপনার উইথড্র রিকোয়েস্ট জমা হয়েছে! প্রসেসিং ফি ৳৪০০ আপনার আয় থেকে কেটে ১০০ টাকা বিকাশ/নগদে পাঠানো হবে।");
+            }
+        }
+    </script>
+</body>
+</html>
